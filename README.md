@@ -1,6 +1,6 @@
 # usedexports
 
-Find exported values that could be unexported.
+Find exported variables (`const`, `var`, `func`, `struct`) that could be unexported.
 
 ### Get Started
 

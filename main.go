@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-const usageDoc = `usedexports: find exported values that could be unexported
+const usageDoc = `usedexports: find exported variables that could be unexported
 
 Usage:
 
