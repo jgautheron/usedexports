@@ -129,7 +129,7 @@ func parseExports(dir string) error {
 
 	for _, pkg := range pkgs {
 		for fn, f := range pkg.Files {
-			ast.Walk(&ExportsVisitor{
+			ast.Walk(&exportsVisitor{
 				fileSet:     fset,
 				packageName: pkg.Name,
 				fileName:    fn,
@@ -140,12 +140,12 @@ func parseExports(dir string) error {
 	return nil
 }
 
-type ExportsVisitor struct {
+type exportsVisitor struct {
 	fileSet               *token.FileSet
 	packageName, fileName string
 }
 
-func (v *ExportsVisitor) Visit(node ast.Node) ast.Visitor {
+func (v *exportsVisitor) Visit(node ast.Node) ast.Visitor {
 	if node == nil {
 		return v
 	}
@@ -190,7 +190,7 @@ func (v *ExportsVisitor) Visit(node ast.Node) ast.Visitor {
 	return v
 }
 
-func (v *ExportsVisitor) addExportedItem(name string, pos token.Pos, tok token.Token) {
+func (v *exportsVisitor) addExportedItem(name string, pos token.Pos, tok token.Token) {
 	exports[v.packageName+"-"+name] = &itemInfo{
 		name:     name,
 		token:    tok,
@@ -237,7 +237,7 @@ func parseUsedExports(dir string) error {
 				imports[importIdent] = imprt
 			}
 
-			ast.Walk(&UsedExportsVisitor{
+			ast.Walk(&usedExportsVisitor{
 				imports:     imports,
 				fileSet:     fset,
 				packageName: pkg.Name,
@@ -249,13 +249,13 @@ func parseUsedExports(dir string) error {
 	return nil
 }
 
-type UsedExportsVisitor struct {
+type usedExportsVisitor struct {
 	imports               map[string]*ast.ImportSpec
 	fileSet               *token.FileSet
 	packageName, fileName string
 }
 
-func (v *UsedExportsVisitor) Visit(node ast.Node) ast.Visitor {
+func (v *usedExportsVisitor) Visit(node ast.Node) ast.Visitor {
 	if node == nil {
 		return v
 	}
@@ -274,17 +274,6 @@ func (v *UsedExportsVisitor) Visit(node ast.Node) ast.Visitor {
 		mapIdx := ident.Name + "-" + t.Sel.String()
 		if _, ok := exports[mapIdx]; ok {
 			exports[mapIdx].count++
-		}
-	case *ast.CompositeLit:
-		if ident, ok := t.Type.(*ast.Ident); ok {
-			if !ident.IsExported() {
-				return v
-			}
-
-			mapIdx := v.packageName + "-" + ident.Name
-			if _, ok := exports[mapIdx]; ok {
-				exports[mapIdx].count++
-			}
 		}
 	}
 

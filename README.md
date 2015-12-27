@@ -2,6 +2,9 @@
 
 Find exported variables (`const`, `var`, `func`, `struct`) in Go that could be unexported.
 
+The [Go Challenge #5](http://golang-challenge.com/go-challenge5/) sparked the idea of detecting unused exports.  
+My goal with `usedexports` is to report on unused exports for a local application, and not scan the whole `GOPATH`.
+
 ### Get Started
 
     $ go get github.com/jgautheron/usedexports
