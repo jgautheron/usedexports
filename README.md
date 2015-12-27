@@ -32,3 +32,11 @@ For this reason, `usedexports` will stop if it won't find the `main` package in 
 
 1. `usedexports` does not take into account the composed interfaces, so it will report by example on the `MarshalJSON` composed function.
 2. If there are multiple `struct` methods in the same package, only the last occurrence will be reported.
+
+### Other static analysis tools
+
+- [gogetimports](https://github.com/jgautheron/gogetimports): Get a JSON-formatted list of imports.
+- [goconst](https://github.com/jgautheron/goconst): Find repeated strings that could be replaced by a constant.
+
+### License
+MIT
