@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -113,7 +114,22 @@ func parseTree(fn func(string) error) error {
 
 func parseExports(dir string) error {
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, dir, nil, 0)
+	pkgs, err := parser.ParseDir(fset, dir, func(info os.FileInfo) bool {
+		valid, name := true, info.Name()
+
+		if len(*flagIgnore) != 0 {
+			match, err := regexp.MatchString(*flagIgnore, dir+name)
+			if err != nil {
+				log.Fatal(err)
+				return true
+			}
+			if match {
+				valid = false
+			}
+		}
+
+		return valid
+	}, 0)
 	if err != nil {
 		return err
 	}
